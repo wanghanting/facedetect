@@ -29,8 +29,31 @@ def detect(img, cascade):
 def draw_rects(img, rects, color):
     for x1, y1, x2, y2 in rects:
         cv.rectangle(img, (x1, y1), (x2, y2), color, 2)
-        # cv.circle(img, (x1, y1), (x2, y2), color, 2)
 
+# def draw_circle(img, rects, color):
+#     for x1, y1, x2, y2 in rects:
+#         cv.circle(img, (x1+x2)/2, (y1+y2)/2, ((y2-y1)/8), color, 1)
+
+def draw_circles(img, rects,color):
+    for x1,y1,x2,y2 in rects:
+        cv.circle(img,(int((x1+x2)/2),int((y1+y2)/2)),30,color,2)
+
+def draw_chapeau(img,rects):
+    for x1,y1,x2,y2 in rects:
+        midx=int((x1+x2)/2)
+        midy=int((y1+y2)/2)
+        pts=np.array([[midx-150,midy-175],[midx+150,midy-175],[midx,midy-250]])
+        cv.polylines(img, [pts], True, (25, 255, 255), 10)
+
+def draw_ellipses(img,rects,color):
+    for x1,y1,x2,y2 in rects:
+        cv.ellipse(img,(int((x1+x2)/2),int((y1+y2)/2)),(130,175),0,0,360,color,2)
+
+def draw_nez(img,rects):
+    for x1,y1,x2,y2 in rects:
+        midx=int((x1+x2)/2)
+        midy=int((y1+y2)/2)
+        cv.circle(img, (midx,midy+10),15, (0, 0, 255), 15)
 
 def main():
     import sys, getopt
@@ -58,6 +81,9 @@ def main():
         t = clock()
         rects = detect(gray, cascade)
         vis = img.copy()
+        draw_ellipses(vis, rects, (0, 255, 0))
+        draw_chapeau(vis,rects)
+        draw_nez(vis,rects)
         draw_rects(vis, rects, (0, 255, 0))
         if not nested.empty():
             for x1, y1, x2, y2 in rects:
